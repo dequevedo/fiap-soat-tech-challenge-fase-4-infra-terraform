@@ -7,7 +7,7 @@
 
 # Arquivos de bloqueio do Terraform
 **/.terraform.tfstate.lock.info
-**/.terraform.lock.hcl
+#**/.terraform.lock.hcl #Comentado, tentando versionar o lock
 
 # Arquivos de log de crash do Terraform
 **/crash.log
