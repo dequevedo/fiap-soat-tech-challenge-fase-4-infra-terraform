@@ -36,6 +36,13 @@ aws eks --region us-east-1 update-kubeconfig --name tech-challenge-cluster --pro
 
 ## Terraform
 
+### Primeiros passos
+
+Para rodar o Terraform é necessário que exista um Bucket S3 na AWS para armazenar o estado do Terraform.
+O Bucket deve estar de acordo com as configurações do arquivo ```terraform-eks/main.tf```.
+
+### Rodando o Terraform
+
 Inicializar o Terraform
 ```sh
 terraform -chdir=terraform-eks init
