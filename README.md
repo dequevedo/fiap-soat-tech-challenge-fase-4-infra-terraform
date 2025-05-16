@@ -45,7 +45,11 @@ O Bucket deve estar de acordo com as configurações do arquivo ```terraform-eks
 
 Inicializar o Terraform
 ```sh
-terraform -chdir=terraform-eks init
+terraform -chdir=terraform-eks init \
+  -backend-config="bucket=terraform-state-techchallenge" \
+  -backend-config="key=infraestrutura/state.tfstate" \
+  -backend-config="region=us-east-1" \
+  -backend-config="encrypt=true"
 ```
 
 Verificar tudo que o Terraform fará
