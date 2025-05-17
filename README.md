@@ -78,6 +78,7 @@ kubectl config get-contexts
 aws eks update-kubeconfig --name tech-challenge-cluster --region us-east-1 --profile default
 ```
 Lembre-se de passar o ```sh --profile default``` com o nome correto do seu profile da AWS que possui as credenciais de acesso ao EKS.
+Profiles podem ser verificados com o comando:```aws configure list-profiles```
 
 3. Verificar se o novo Contexto foi criado corretamente:
 ```sh
