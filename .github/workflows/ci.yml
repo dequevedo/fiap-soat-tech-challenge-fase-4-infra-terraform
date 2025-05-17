@@ -19,7 +19,6 @@ env:
   TF_BACKEND_BUCKET: terraform-state-techchallenge
   TF_BACKEND_KEY: infraestrutura/state.tfstate
   TF_REGION: us-east-1
-  TF_DIR: terraform-eks
 
 jobs:
   plan:
@@ -49,15 +48,12 @@ jobs:
             -backend-config="key=${{ env.TF_BACKEND_KEY }}" \
             -backend-config="region=${{ env.TF_REGION }}" \
             -backend-config="encrypt=true"
-        working-directory: ${{ env.TF_DIR }}
 
       - name: Validar Terraform
         run: terraform validate
-        working-directory: ${{ env.TF_DIR }}
 
       - name: Planejar Terraform
         run: terraform plan
-        working-directory: ${{ env.TF_DIR }}
 
   deploy:
     name: Terraform Deploy
@@ -88,8 +84,6 @@ jobs:
             -backend-config="key=${{ env.TF_BACKEND_KEY }}" \
             -backend-config="region=${{ env.TF_REGION }}" \
             -backend-config="encrypt=true"
-        working-directory: ${{ env.TF_DIR }}
 
       - name: Aplicar Terraform
         run: terraform apply -auto-approve
-        working-directory: ${{ env.TF_DIR }}
