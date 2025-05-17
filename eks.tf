@@ -33,7 +33,7 @@ module "eks" {
     amc-cluster-wg = {
       min_size       = 1
       max_size       = 2
-      desired_size   = 1
+      desired_size   = 2
       instance_types = ["t3.large"]
       capacity_type  = "SPOT"
       security_groups = [aws_security_group.eks_sg.id]
