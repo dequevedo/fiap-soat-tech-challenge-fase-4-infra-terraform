@@ -45,7 +45,7 @@ O Bucket deve estar de acordo com as configurações do arquivo ```terraform-eks
 
 Inicializar o Terraform
 ```sh
-terraform -chdir=terraform-eks init \
+terraform init \
   -backend-config="bucket=terraform-state-techchallenge" \
   -backend-config="key=infraestrutura/state.tfstate" \
   -backend-config="region=us-east-1" \
@@ -54,17 +54,17 @@ terraform -chdir=terraform-eks init \
 
 Verificar tudo que o Terraform fará
 ```sh
-terraform -chdir=terraform-eks plan
+terraform plan
 ```
 
 Aplicar o Terraform
 ```sh
-terraform -chdir=terraform-eks apply -auto-approve
+terraform apply -auto-approve
 ```
 
 Remover tudo que o Terraform criou
 ```sh
-terraform -chdir=terraform-eks destroy -auto-approve
+terraform destroy -auto-approve
 ```
 
 ## Visualizar o cluster utilizando Lens ou Monokle
