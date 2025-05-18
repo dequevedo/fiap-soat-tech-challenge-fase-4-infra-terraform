@@ -52,8 +52,8 @@ jobs:
       - name: Validar Terraform
         run: terraform validate
 
-      - name: Planejar Terraform
-        run: terraform plan
+      - name: Planejar Terraform #TODO tirar dados sensiveis depois
+        run: terraform plan -var="db_username=tech_challenge" -var="db_password=TyH2qEhgnIj41B"
 
   deploy:
     name: Terraform Deploy
