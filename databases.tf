@@ -59,30 +59,3 @@ provider "postgresql" {
   sslmode         = "require"
   connect_timeout = 15
 }
-
-resource "postgresql_database" "customer_db" {
-  name             = "customer"
-  owner            = var.db_username
-  encoding         = "UTF8"
-  lc_collate       = "en_US.UTF-8"
-  lc_ctype         = "en_US.UTF-8"
-  connection_limit = -1
-}
-
-resource "postgresql_database" "order_db" {
-  name             = "order"
-  owner            = var.db_username
-  encoding         = "UTF8"
-  lc_collate       = "en_US.UTF-8"
-  lc_ctype         = "en_US.UTF-8"
-  connection_limit = -1
-}
-
-resource "postgresql_database" "product_db" {
-  name             = "product"
-  owner            = var.db_username
-  encoding         = "UTF8"
-  lc_collate       = "en_US.UTF-8"
-  lc_ctype         = "en_US.UTF-8"
-  connection_limit = -1
-}
