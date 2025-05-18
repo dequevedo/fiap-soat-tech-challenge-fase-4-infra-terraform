@@ -85,5 +85,5 @@ jobs:
             -backend-config="region=${{ env.TF_REGION }}" \
             -backend-config="encrypt=true"
 
-      - name: Aplicar Terraform
-        run: terraform apply -auto-approve
+      - name: Aplicar Terraform #TODO tirar dados sensiveis depois
+        run: terraform apply -auto-approve -var="db_username=tech_challenge" -var="db_password=TyH2qEhgnIj41B"
