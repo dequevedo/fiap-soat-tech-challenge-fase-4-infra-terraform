@@ -53,4 +53,4 @@ jobs:
       - name: Destruir Infraestrutura
         run: |
           echo "Destruindo infraestrutura"
-          terraform destroy -auto-approve
+          terraform destroy -auto-approve -var="db_username=tech_challenge" -var="db_password=TyH2qEhgnIj41B"
