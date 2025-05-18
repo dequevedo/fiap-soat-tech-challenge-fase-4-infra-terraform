@@ -15,6 +15,12 @@ terraform {
     region = "us-east-1"
     encrypt = true
   }
+  required_providers {
+    postgresql = {
+      source  = "cyrilgdn/postgresql"
+      version = "~> 1.21.0"
+    }
+  }
 }
 
 provider "aws" {
