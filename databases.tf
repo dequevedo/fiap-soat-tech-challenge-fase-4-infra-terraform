@@ -54,8 +54,8 @@ resource "aws_db_instance" "rds_postgres" {
 provider "postgresql" {
   host            = aws_db_instance.rds_postgres.address
   port            = 5432
-  username        = var.db_username
-  password        = var.db_password
+  username        = tech_challenge # TODO remover isso var.username
+  password        = TyH2qEhgnIj41B # TODO remover isso e usar uma var.db_password
   sslmode         = "require"
   connect_timeout = 15
 }
