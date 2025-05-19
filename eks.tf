@@ -5,7 +5,22 @@ module "eks" {
   cluster_name                         = local.name
   cluster_endpoint_public_access       = true
   authentication_mode                  = "API"
-  enable_cluster_creator_admin_permissions = true
+
+  access_entries = {
+    terraform_admin = {
+      principal_arn   = "arn:aws:iam::436648017334:user/tech-challenge-terraform-user"
+      access_policies = [
+        "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+      ]
+    }
+
+    github_admin = {
+      principal_arn   = "arn:aws:iam::436648017334:user/tech-challenge-github-actions-user"
+      access_policies = [
+        "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+      ]
+    }
+  }
 
   create_kms_key = false
   cluster_encryption_config = []
