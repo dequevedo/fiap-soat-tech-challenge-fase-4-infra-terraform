@@ -1,6 +1,6 @@
 resource "aws_security_group" "mongo_sg" {
   name        = "mongo-ec2-sg"
-  description = "Permitir acesso à porta 27017 dentro da VPC"
+  description = "Allow MongoDB access within VPC, port 27017"
   vpc_id      = module.vpc.vpc_id
 
   ingress {
