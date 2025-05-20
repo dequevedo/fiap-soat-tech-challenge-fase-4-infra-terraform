@@ -89,6 +89,6 @@ module "eks" {
       }
     }
 
-    security_groups = [aws_security_group.eks_sg.id]
+#    security_groups = [aws_security_group.eks_sg.id]
   }
 }
