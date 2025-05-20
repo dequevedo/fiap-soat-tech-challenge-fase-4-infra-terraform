@@ -54,6 +54,7 @@ module "eks" {
       labels         = {
         app = "fiap-soat-tech-challenge-customer-api-app"
       }
+      security_groups = [aws_security_group.eks_sg.id]
     }
 
     orders-service = {
@@ -65,6 +66,7 @@ module "eks" {
       labels         = {
         app = "fiap-soat-tech-challenge-orders-api-app"
       }
+      security_groups = [aws_security_group.eks_sg.id]
     }
 
     payment-service = {
@@ -76,6 +78,7 @@ module "eks" {
       labels         = {
         app = "fiap-soat-tech-challenge-payment-api-app"
       }
+      security_groups = [aws_security_group.eks_sg.id]
     }
 
     product-service = {
@@ -87,6 +90,7 @@ module "eks" {
       labels         = {
         app = "fiap-soat-tech-challenge-product-api-app"
       }
+      security_groups = [aws_security_group.eks_sg.id]
     }
 
 #    security_groups = [aws_security_group.eks_sg.id]
