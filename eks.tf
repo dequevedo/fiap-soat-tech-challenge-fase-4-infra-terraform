@@ -22,8 +22,8 @@ module "eks" {
     }
   }
 
-  create_kms_key = false
-  cluster_encryption_config = []
+  create_kms_key             = false
+  cluster_encryption_config  = []
 
   cluster_addons = {
     coredns    = { most_recent = true }
@@ -45,12 +45,21 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    amc-cluster-wg = {
-      min_size       = 1
-      max_size       = 1
-      desired_size   = 1
-      instance_types = ["t3.large"]
+    java-ms-group = {
+      min_size       = 2
+      max_size       = 6
+      desired_size   = 3
+      instance_types = ["t3.small"]
       capacity_type  = "SPOT"
+
+      labels = {
+        workload = "java-spring"
+      }
+
+      tags = {
+        Name = "eks-java-nodegroup"
+      }
+
       security_groups = [aws_security_group.eks_sg.id]
     }
   }

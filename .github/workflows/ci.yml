@@ -19,6 +19,7 @@ env:
   TF_BACKEND_BUCKET: terraform-state-techchallenge
   TF_BACKEND_KEY: infraestrutura/state.tfstate
   TF_REGION: us-east-1
+  CLUSTER_NAME: tech-challenge-cluster
 
 jobs:
   plan:
@@ -52,7 +53,7 @@ jobs:
       - name: Validar Terraform
         run: terraform validate
 
-      - name: Planejar Terraform #TODO tirar dados sensiveis depois
+      - name: Planejar Terraform
         run: terraform plan -var="db_username=tech_challenge" -var="db_password=TyH2qEhgnIj41B"
 
   deploy:
@@ -87,3 +88,49 @@ jobs:
 
       - name: Aplicar Terraform #TODO tirar dados sensiveis depois
         run: terraform apply -auto-approve -var="db_username=tech_challenge" -var="db_password=TyH2qEhgnIj41B"
+
+  install-autoscaler:
+    name: Instalar Cluster Autoscaler
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Instalar kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configurar AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.TF_REGION }}
+
+      - name: Obter kubeconfig
+        run: |
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.TF_REGION }}
+
+      - name: Instalar Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'latest'
+
+      - name: Instalar Cluster Autoscaler via Helm
+        run: |
+          helm repo add autoscaler https://kubernetes.github.io/autoscaler
+          helm repo update
+          helm upgrade --install cluster-autoscaler autoscaler/cluster-autoscaler \
+            --namespace kube-system \
+            --set autoDiscovery.clusterName=${{ env.CLUSTER_NAME }} \
+            --set awsRegion=${{ env.TF_REGION }} \
+            --set rbac.create=true \
+            --set extraArgs.balance-similar-node-groups=true \
+            --set extraArgs.skip-nodes-with-local-storage=false \
+            --set extraArgs.expander=least-waste \
+            --set nodeSelector."kubernetes\.io/os"=linux \
+            --set tolerations[0].key="node-role.kubernetes.io/control-plane" \
+            --set tolerations[0].operator="Exists" \
+            --set tolerations[0].effect="NoSchedule" \
+            --set serviceAccount.create=true \
+            --set serviceAccount.name=cluster-autoscaler
