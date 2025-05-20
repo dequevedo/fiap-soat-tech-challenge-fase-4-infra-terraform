@@ -37,7 +37,7 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     ami_type       = "AL2_x86_64"
-    instance_types = ["t3.medium"]
+    instance_types = ["t3.small"]
 
     node_security_group_tags = {
       "kubernetes.io/cluster/${local.name}" = null
