@@ -76,7 +76,7 @@ resource "aws_lb_target_group" "product_target_group" {
   health_check {
     interval = 30
     path     = "/actuator/health"
-    port     = 8080
+    port     = 30080
     protocol = "HTTP"
     timeout  = 5
     healthy_threshold   = 2
