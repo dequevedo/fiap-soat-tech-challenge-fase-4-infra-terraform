@@ -3,9 +3,24 @@ resource "aws_security_group" "eks_sg" {
   description = "Security Group fixo para o cluster EKS"
   vpc_id      = module.vpc.vpc_id
 
+  # Permitir tráfego nas portas 8080, 8081, 8082 para os pods
   ingress {
-    from_port   = 30080
-    to_port     = 30080
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Permite tráfego de qualquer origem
+  }
+
+  ingress {
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Permite tráfego de qualquer origem
+  }
+
+  ingress {
+    from_port   = 8082
+    to_port     = 8082
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]  # Permite tráfego de qualquer origem
   }
@@ -20,13 +35,4 @@ resource "aws_security_group" "eks_sg" {
   tags = {
     Name = "eks-cluster-sg"
   }
-}
-
-resource "aws_security_group_rule" "allow_eks_30090" {
-  type              = "ingress"
-  from_port         = 30080
-  to_port           = 30080
-  protocol         = "TCP"
-  security_group_id = aws_security_group.eks_sg.id
-  source_security_group_id = aws_security_group.sg.id
 }
