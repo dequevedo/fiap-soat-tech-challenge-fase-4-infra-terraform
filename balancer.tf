@@ -26,10 +26,17 @@ resource "aws_security_group" "sg" {
   }
 
   ingress {
-    from_port   = 30080
-    to_port     = 30080
+    from_port   = 8081
+    to_port     = 8081
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]  # Permite tráfego na porta 30080 de qualquer IP
+    cidr_blocks = ["0.0.0.0/0"]  # Permite tráfego na porta 8081 de qualquer IP
+  }
+
+  ingress {
+    from_port   = 8082
+    to_port     = 8082
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]  # Permite tráfego na porta 8082 de qualquer IP
   }
 
   egress {
@@ -59,9 +66,9 @@ resource "aws_lb" "internal_nlb" {
   }
 }
 
-# Target Group associado ao Load Balancer
-resource "aws_lb_target_group" "target_group" {
-  name     = "tech-challenge-target-group"
+# Target Group para API Products (porta 8080)
+resource "aws_lb_target_group" "product_target_group" {
+  name     = "product-target-group"
   port     = 8080
   protocol = "TCP"
   vpc_id   = module.vpc.vpc_id
@@ -69,7 +76,43 @@ resource "aws_lb_target_group" "target_group" {
   health_check {
     interval = 30
     path     = "/actuator/health"
-    port     = 30080
+    port     = 8080
+    protocol = "HTTP"
+    timeout  = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
+# Target Group para API Customers (porta 8081)
+resource "aws_lb_target_group" "customer_target_group" {
+  name     = "customer-target-group"
+  port     = 8081
+  protocol = "TCP"
+  vpc_id   = module.vpc.vpc_id
+
+  health_check {
+    interval = 30
+    path     = "/actuator/health"
+    port     = 8081
+    protocol = "HTTP"
+    timeout  = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
+# Target Group para API Orders (porta 8082)
+resource "aws_lb_target_group" "order_target_group" {
+  name     = "order-target-group"
+  port     = 8082
+  protocol = "TCP"
+  vpc_id   = module.vpc.vpc_id
+
+  health_check {
+    interval = 30
+    path     = "/actuator/health"
+    port     = 8082
     protocol = "HTTP"
     timeout  = 5
     healthy_threshold   = 2
@@ -85,7 +128,31 @@ resource "aws_lb_listener" "listener_8080" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.target_group.arn
+    target_group_arn = aws_lb_target_group.product_target_group.arn
+  }
+}
+
+# Listener para a porta 8081
+resource "aws_lb_listener" "listener_8081" {
+  load_balancer_arn = aws_lb.internal_nlb.arn
+  port              = "8081"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.customer_target_group.arn
+  }
+}
+
+# Listener para a porta 8082
+resource "aws_lb_listener" "listener_8082" {
+  load_balancer_arn = aws_lb.internal_nlb.arn
+  port              = "8082"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.order_target_group.arn
   }
 }
 
@@ -97,7 +164,7 @@ resource "aws_lb_listener" "listener_80" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.target_group.arn
+    target_group_arn = aws_lb_target_group.product_target_group.arn
   }
 }
 
@@ -109,6 +176,6 @@ resource "aws_lb_listener" "listener_443" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.target_group.arn
+    target_group_arn = aws_lb_target_group.product_target_group.arn
   }
 }
