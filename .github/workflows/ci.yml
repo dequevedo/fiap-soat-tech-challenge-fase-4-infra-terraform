@@ -90,7 +90,7 @@ jobs:
         run: terraform apply -auto-approve -var="db_username=tech_challenge" -var="db_password=TyH2qEhgnIj41B"
 
   install-cluster-components:
-    name: Instalar Cluster Autoscaler e Metrics Server
+    name: Instalar Componentes do Cluster
     needs: deploy
     runs-on: ubuntu-latest
 
@@ -115,6 +115,19 @@ jobs:
         uses: azure/setup-helm@v3
         with:
           version: 'latest'
+
+      - name: Instalar Ingress NGINX Controller via Helm
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo update
+          helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+            --namespace ingress-nginx --create-namespace \
+            --set controller.service.type=NodePort \
+            --set controller.service.nodePorts.http=30080 \
+            --set controller.service.nodePorts.https=30443 \
+            --set controller.ingressClassResource.name=nginx \
+            --set controller.ingressClassResource.default=false \
+            --set controller.service.externalTrafficPolicy=Cluster
 
       - name: Instalar Cluster Autoscaler via Helm
         run: |

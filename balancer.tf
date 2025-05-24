@@ -5,10 +5,10 @@ resource "aws_security_group" "product_nlb_sg" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = 30080
+    to_port     = 30080
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]  # Permite tráfego na porta 8080 de qualquer IP
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -23,14 +23,13 @@ resource "aws_security_group" "product_nlb_sg" {
   }
 }
 
-# NLB para o microserviço de Product
+# NLB para o Ingress Controller
 resource "aws_lb" "product_nlb" {
   name               = "product-nlb"
-  internal           = true  # Define como NLB interno
+  internal           = true
   load_balancer_type = "network"
   security_groups    = [aws_security_group.product_nlb_sg.id]
   subnets            = module.vpc.private_subnets
-
   enable_deletion_protection = false
 
   tags = {
@@ -38,29 +37,49 @@ resource "aws_lb" "product_nlb" {
   }
 }
 
-# Target Group para o microserviço de Product
+# Target Group do tipo instance
 resource "aws_lb_target_group" "product_target_group" {
-  name     = "product-target-group"
-  port     = 8080
-  protocol = "TCP"
-  vpc_id   = module.vpc.vpc_id
+  name        = "product-target-group"
+  protocol    = "HTTP"
+  port        = 30080
+  vpc_id      = module.vpc.vpc_id
+  target_type = "instance"
 
   health_check {
-    interval = 30
-    path     = "/actuator/health"
-    port     = 8080
-    protocol = "HTTP"
-    timeout  = 5
+    protocol            = "HTTP"
+    port                = "30080"
+    path                = "/actuator/health"
+    interval            = 5
+    timeout             = 2
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
+
+  tags = {
+    Name = "product-target-group"
+  }
 }
 
-# Listener para o NLB do Product (porta 8080)
+data "aws_instances" "eks_nodes" {
+  filter {
+    name   = "tag:eks:cluster-name"
+    values = [local.name]
+  }
+}
+
+resource "aws_lb_target_group_attachment" "product_targets" {
+  for_each = toset(data.aws_instances.eks_nodes.ids)
+
+  target_group_arn = aws_lb_target_group.product_target_group.arn
+  target_id        = each.value
+  port             = 30080
+}
+
+# Listener do NLB na porta 80
 resource "aws_lb_listener" "product_listener" {
   load_balancer_arn = aws_lb.product_nlb.arn
-  port              = "8080"
-  protocol          = "TCP"
+  port     = 8080
+  protocol = "HTTP"
 
   default_action {
     type             = "forward"
