@@ -75,11 +75,11 @@ resource "aws_lb_target_group_attachment" "product_targets" {
   port             = 30080
 }
 
-# Listener do NLB na porta 80
+# Listener do NLB na porta 80 (TCP)
 resource "aws_lb_listener" "product_listener" {
   load_balancer_arn = aws_lb.product_nlb.arn
-  port     = 8080
-  protocol = "HTTP"
+  port              = 80
+  protocol          = "TCP"  # ✅ NLB só permite TCP, UDP, TLS, etc.
 
   default_action {
     type             = "forward"
