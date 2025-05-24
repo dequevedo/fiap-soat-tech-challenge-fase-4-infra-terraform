@@ -50,7 +50,7 @@ module "eks" {
       min_size       = 1
       max_size       = 1
       desired_size   = 1
-      instance_types = ["t3.nano"]
+      instance_types = ["t3.small"]
       capacity_type  = "SPOT"
       labels         = {
         app = "ingress-nodegroup"
