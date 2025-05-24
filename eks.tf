@@ -45,6 +45,18 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
+    ingress-nodegroup = {
+      min_size       = 1
+      max_size       = 1
+      desired_size   = 1
+      instance_types = ["t3.small"]
+      capacity_type  = "SPOT"
+      labels         = {
+        app = "ingress-nodegroup"
+      }
+      security_groups = [aws_security_group.eks_sg.id]
+    }
+
     customer-service = {
       min_size       = 1
       max_size       = 2

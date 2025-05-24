@@ -129,7 +129,8 @@ jobs:
             --set controller.service.nodePorts.https=30443 \
             --set controller.ingressClassResource.name=nginx \
             --set controller.ingressClassResource.default=false \
-            --set controller.service.externalTrafficPolicy=Cluster
+            --set controller.service.externalTrafficPolicy=Cluster \
+            --set controller.nodeSelector.app=ingress-nodegroup
 
       - name: Instalar Cluster Autoscaler via Helm
         run: |
