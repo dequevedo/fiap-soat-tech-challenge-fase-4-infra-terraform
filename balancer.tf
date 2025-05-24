@@ -1,28 +1,28 @@
-## Security Group para o NLB
-#resource "aws_security_group" "product_nlb_sg" {
-#  name        = "product-nlb-sg"
-#  description = "Security group for the product service NLB"
-#  vpc_id      = module.vpc.vpc_id
-#
-#  ingress {
-#    from_port   = 80
-#    to_port     = 80
-#    protocol    = "TCP"
-#    cidr_blocks = ["0.0.0.0/0"]
-#  }
-#
-#  egress {
-#    from_port   = 0
-#    to_port     = 0
-#    protocol    = "-1"
-#    cidr_blocks = ["0.0.0.0/0"]
-#  }
-#
-#  tags = {
-#    Name = "product-nlb-sg"
-#  }
-#}
-#
+# Security Group para o NLB
+resource "aws_security_group" "product_nlb_sg" {
+  name        = "product-nlb-sg"
+  description = "Security group for the product service NLB"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "product-nlb-sg"
+  }
+}
+
 ## NLB para o Ingress Controller
 #resource "aws_lb" "product_nlb" {
 #  name               = "product-nlb"
