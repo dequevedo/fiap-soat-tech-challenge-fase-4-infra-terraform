@@ -29,7 +29,7 @@ resource "aws_lb" "ingress_nlb" {
   internal           = false
   load_balancer_type = "network"
   security_groups    = [aws_security_group.ingress_nlb_sg.id]
-  subnets            = module.vpc.private_subnets
+  subnets = module.vpc.public_subnets ### TODO alterar para private assim que o GTW funcionar
   enable_deletion_protection = false
 
   tags = {
