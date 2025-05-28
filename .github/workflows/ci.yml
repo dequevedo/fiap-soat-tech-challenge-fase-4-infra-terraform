@@ -131,6 +131,7 @@ jobs:
             --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb" \
             --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-target-type"="ip" \
             --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-nlb-target-group-attributes"="preserve_client_ip.enabled=true" \
+            --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-name"="tech-challenge-nlb" \
             --set controller.nodeSelector.app=ingress-nodegroup
 
       - name: Instalar Cluster Autoscaler via Helm
