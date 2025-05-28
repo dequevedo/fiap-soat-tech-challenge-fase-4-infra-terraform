@@ -54,6 +54,10 @@ resource "aws_lb_target_group" "ingress_target_group" {
     unhealthy_threshold = 2
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = {
     Name = "ingress-target-group"
   }
@@ -69,8 +73,4 @@ resource "aws_lb_listener" "ingress_listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.ingress_target_group.arn
   }
-
-  depends_on = [
-    aws_lb_target_group.ingress_target_group
-  ]
 }
