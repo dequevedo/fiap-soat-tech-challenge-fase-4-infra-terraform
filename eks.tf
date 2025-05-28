@@ -53,7 +53,7 @@ module "eks" {
       instance_types = ["t3.small"]
       capacity_type  = "SPOT"
       labels         = {
-        app = "ingress-nodegroup"
+        app = "ingress-nodegroup" # Essa label permite que o balancer.tf consiga atribuir o ingress como target no target groups da AWS
       }
       security_groups = [aws_security_group.eks_sg.id]
     }

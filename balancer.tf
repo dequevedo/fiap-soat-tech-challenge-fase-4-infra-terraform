@@ -72,8 +72,15 @@ resource "aws_lb_listener" "ingress_listener" {
 }
 
 # Associação do Node do Ingress como Target do Target Group
+data "aws_instances" "ingress_nodes" {
+  filter {
+    name   = "tag:Name"
+    values = ["ingress-nodegroup"]
+  }
+}
+
 resource "aws_lb_target_group_attachment" "ingress_target" {
   target_group_arn = aws_lb_target_group.ingress_target_group.arn
-  target_id        = "i-071934f25995a77b6"
+  target_id        = data.aws_instances.ingress_nodes.ids[0]
   port             = 30080
 }
