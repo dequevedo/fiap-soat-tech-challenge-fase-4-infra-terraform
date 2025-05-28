@@ -124,12 +124,13 @@ jobs:
             --namespace ingress-nginx --create-namespace \
             --set controller.kind=Deployment \
             --set controller.replicaCount=1 \
-            --set controller.service.type=NodePort \
-            --set controller.service.nodePorts.http=30080 \
-            --set controller.service.nodePorts.https=30443 \
+            --set controller.service.type=LoadBalancer \
+            --set controller.service.externalTrafficPolicy=Cluster \
             --set controller.ingressClassResource.name=nginx \
             --set controller.ingressClassResource.default=false \
-            --set controller.service.externalTrafficPolicy=Cluster \
+            --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb" \
+            --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-target-type"="ip" \
+            --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-nlb-target-group-attributes"="preserve_client_ip.enabled=true" \
             --set controller.nodeSelector.app=ingress-nodegroup
 
       - name: Instalar Cluster Autoscaler via Helm
